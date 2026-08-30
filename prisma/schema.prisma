@@ -1,0 +1,58 @@
+// Prisma schema for PRST Events QR Registration
+
+generator client {
+  provider = "prisma-client"
+  output   = "../app/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model AdminUser {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  passwordHash String
+  name         String
+  createdAt    DateTime @default(now())
+}
+
+model Event {
+  id            String         @id @default(cuid())
+  slug          String         @unique
+  title         String
+  description   String?
+  location      String?
+  startsAt      DateTime
+  endsAt        DateTime?
+  isActive      Boolean        @default(true)
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  registrations Registration[]
+}
+
+model Registration {
+  id            String             @id @default(cuid())
+  event         Event              @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  eventId       String
+  fullName      String
+  phone         String
+  email         String
+  company       String
+  position      String
+  consentGiven  Boolean            @default(false)
+  ticketToken   String             @unique
+  status        RegistrationStatus @default(REGISTERED)
+  emailSentAt   DateTime?
+  emailError    String?
+  checkedInAt   DateTime?
+  createdAt     DateTime           @default(now())
+
+  @@index([eventId])
+  @@index([ticketToken])
+}
+
+enum RegistrationStatus {
+  REGISTERED
+  CHECKED_IN
+}
