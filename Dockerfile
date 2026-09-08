@@ -4,7 +4,10 @@ FROM node:22-alpine AS base
 FROM base AS deps
 WORKDIR /app
 COPY package.json package-lock.json ./
-RUN npm ci
+# --ignore-scripts: the "postinstall" script runs `prisma generate`, which
+# needs prisma/schema.prisma — not copied into the image until the "build"
+# stage below, which calls `prisma generate` explicitly after COPY . .
+RUN npm ci --ignore-scripts
 
 # ---- build: generate Prisma client and build the Next.js app ----
 # Also used directly (via `docker compose run`) to execute one-off
