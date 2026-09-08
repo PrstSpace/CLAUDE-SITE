@@ -6,6 +6,20 @@ export function parseMskDatetimeLocal(value: string): Date {
   return new Date(`${value}:00+03:00`);
 }
 
+function formatMskDateTime(date: Date): string {
+  return new Intl.DateTimeFormat("ru-RU", {
+    dateStyle: "long",
+    timeStyle: "short",
+    timeZone: "Europe/Moscow",
+  }).format(date);
+}
+
+export function formatEventDateRange(startsAt: Date, endsAt?: Date | null): string {
+  const start = formatMskDateTime(startsAt);
+  if (!endsAt) return start;
+  return `${start} – ${formatMskDateTime(endsAt)}`;
+}
+
 export function toMskDatetimeLocalValue(date: Date): string {
   const parts = new Intl.DateTimeFormat("en-CA", {
     timeZone: "Europe/Moscow",

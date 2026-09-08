@@ -1,4 +1,5 @@
 import "server-only";
+import { formatEventDateRange } from "@/lib/datetime";
 
 const GRAPH_TOKEN_URL = (tenantId: string) =>
   `https://login.microsoftonline.com/${tenantId}/oauth2/v2.0/token`;
@@ -54,16 +55,9 @@ export type TicketEmailParams = {
   eventTitle: string;
   eventLocation?: string | null;
   eventStartsAt: Date;
+  eventEndsAt?: Date | null;
   qrPngBase64: string;
 };
-
-function formatEventDate(date: Date) {
-  return new Intl.DateTimeFormat("ru-RU", {
-    dateStyle: "long",
-    timeStyle: "short",
-    timeZone: "Europe/Moscow",
-  }).format(date);
-}
 
 export async function sendTicketEmail(params: TicketEmailParams): Promise<void> {
   const fromMailbox = process.env.GRAPH_SENDER_MAILBOX;
@@ -74,7 +68,7 @@ export async function sendTicketEmail(params: TicketEmailParams): Promise<void> 
   const accessToken = await getGraphAccessToken();
 
   const subject = `Ваш билет на «${params.eventTitle}»`;
-  const dateStr = formatEventDate(params.eventStartsAt);
+  const dateStr = formatEventDateRange(params.eventStartsAt, params.eventEndsAt);
   const locationRow = params.eventLocation
     ? `<tr><td style="padding:2px 0; color:#8a8a8a; font-size:13px;">Место</td></tr>
        <tr><td style="padding:0 0 14px; color:#0a0a0a; font-size:15px;">${escapeHtml(params.eventLocation)}</td></tr>`

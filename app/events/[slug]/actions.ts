@@ -70,6 +70,7 @@ export async function registerForEvent(
       eventTitle: event.title,
       eventLocation: event.location,
       eventStartsAt: event.startsAt,
+      eventEndsAt: event.endsAt,
       qrPngBase64,
     });
     await prisma.registration.update({

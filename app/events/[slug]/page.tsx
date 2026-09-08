@@ -1,15 +1,8 @@
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { Wordmark } from "@/app/_components/Wordmark";
+import { formatEventDateRange } from "@/lib/datetime";
 import RegistrationForm from "./RegistrationForm";
-
-function formatEventDate(date: Date) {
-  return new Intl.DateTimeFormat("ru-RU", {
-    dateStyle: "long",
-    timeStyle: "short",
-    timeZone: "Europe/Moscow",
-  }).format(date);
-}
 
 export default async function EventRegistrationPage({
   params,
@@ -29,7 +22,9 @@ export default async function EventRegistrationPage({
         <Wordmark variant="dark" size="sm" />
         <div className="flex max-w-lg flex-col items-center gap-2 text-center">
           <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">{event.title}</h1>
-          <p className="text-sm text-neutral-400">{formatEventDate(event.startsAt)}</p>
+          <p className="text-sm text-neutral-400">
+            {formatEventDateRange(event.startsAt, event.endsAt)}
+          </p>
           {event.location && <p className="text-sm text-neutral-400">{event.location}</p>}
         </div>
       </div>
