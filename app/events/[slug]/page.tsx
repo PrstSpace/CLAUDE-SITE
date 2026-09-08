@@ -34,6 +34,8 @@ export default async function EventRegistrationPage({
           <p className="whitespace-pre-line text-neutral-700">{event.description}</p>
         )}
 
+        <h2 className="text-lg font-bold tracking-tight text-neutral-950">Регистрация</h2>
+
         {event.isActive ? (
           <RegistrationForm eventId={event.id} eventTitle={event.title} />
         ) : (
