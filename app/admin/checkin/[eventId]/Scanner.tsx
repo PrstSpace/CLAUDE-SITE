@@ -77,7 +77,7 @@ export default function Scanner({ eventId }: { eventId: string }) {
     <div className="flex flex-col items-center gap-6">
       <div
         id={READER_ELEMENT_ID}
-        className="w-full max-w-sm overflow-hidden rounded-lg border border-neutral-200"
+        className="aspect-square w-full max-w-sm overflow-hidden rounded-lg border border-neutral-200 [&_video]:h-full [&_video]:w-full [&_video]:object-cover"
       />
 
       {cameraError && (
