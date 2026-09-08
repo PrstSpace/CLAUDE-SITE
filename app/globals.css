@@ -1,26 +1,50 @@
 @import "tailwindcss";
 
+/*
+ * Suisse Int'l is a licensed typeface (Swiss Typefaces) used in the PRST
+ * brand identity. We don't ship the font files ourselves — drop licensed
+ * woff2 files at public/fonts/ with these exact names and they'll be
+ * picked up automatically. Until then, browsers silently fall back to
+ * Helvetica Neue / Arial, which is visually close (same grotesk family).
+ */
+@font-face {
+  font-family: "Suisse Int'l";
+  src: url("/fonts/SuisseIntl-Regular.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Suisse Int'l";
+  src: url("/fonts/SuisseIntl-Medium.woff2") format("woff2");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Suisse Int'l";
+  src: url("/fonts/SuisseIntl-Bold.woff2") format("woff2");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --prst-black: #0a0a0a;
+  --prst-white: #ffffff;
+  --background: var(--prst-white);
+  --foreground: var(--prst-black);
+  --font-brand: "Suisse Int'l", "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --font-sans: var(--font-brand);
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-brand);
 }

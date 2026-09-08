@@ -3,8 +3,15 @@
 import { useActionState } from "react";
 import { registerForEvent } from "./actions";
 import { initialRegisterState } from "./form-state";
+import { Wordmark } from "@/app/_components/Wordmark";
 
-export default function RegistrationForm({ eventId }: { eventId: string }) {
+export default function RegistrationForm({
+  eventId,
+  eventTitle,
+}: {
+  eventId: string;
+  eventTitle: string;
+}) {
   const [state, formAction, pending] = useActionState(
     registerForEvent.bind(null, eventId),
     initialRegisterState
@@ -12,24 +19,34 @@ export default function RegistrationForm({ eventId }: { eventId: string }) {
 
   if (state.status === "success") {
     return (
-      <div className="flex flex-col items-center gap-4 rounded-lg border border-green-600/30 bg-green-50 p-6 text-center text-green-900">
-        <p className="font-medium">{state.message}</p>
+      <div className="flex flex-col items-center gap-6 rounded-2xl border border-neutral-950 bg-white p-8 text-center">
+        <Wordmark variant="light" size="sm" />
+        <div className="h-px w-full bg-neutral-200" />
+        <p className="text-neutral-800">{state.message}</p>
         {state.qrDataUrl && (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
-            src={state.qrDataUrl}
-            alt="QR-билет"
-            width={220}
-            height={220}
-            className="rounded-md border border-green-600/30 bg-white p-2"
-          />
+          <>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={state.qrDataUrl}
+              alt="QR-билет"
+              width={220}
+              height={220}
+              className="rounded-lg border border-neutral-200 p-3"
+            />
+            <p className="max-w-xs text-xs text-neutral-500">
+              Предъявите этот QR-код на входе — его отсканирует сотрудник стенда.
+            </p>
+          </>
         )}
+        <div className="mt-2 text-xs font-medium uppercase tracking-widest text-neutral-400">
+          {eventTitle}
+        </div>
       </div>
     );
   }
 
   return (
-    <form action={formAction} className="flex flex-col gap-4">
+    <form action={formAction} className="flex flex-col gap-5">
       <Field
         label="ФИО"
         name="fullName"
@@ -63,8 +80,8 @@ export default function RegistrationForm({ eventId }: { eventId: string }) {
         error={state.fieldErrors?.position}
       />
 
-      <label className="flex items-start gap-2 text-sm text-neutral-700">
-        <input type="checkbox" name="consentGiven" className="mt-1" required />
+      <label className="flex items-start gap-2 text-sm text-neutral-600">
+        <input type="checkbox" name="consentGiven" className="mt-1 accent-neutral-950" required />
         <span>
           Даю согласие на обработку персональных данных в соответствии с{" "}
           <a href="/privacy" target="_blank" className="underline underline-offset-2">
@@ -74,17 +91,17 @@ export default function RegistrationForm({ eventId }: { eventId: string }) {
         </span>
       </label>
       {state.fieldErrors?.consentGiven && (
-        <p className="text-sm text-red-600">{state.fieldErrors.consentGiven}</p>
+        <p className="text-sm text-neutral-900">{state.fieldErrors.consentGiven}</p>
       )}
 
       {state.status === "error" && state.message && (
-        <p className="text-sm text-red-600">{state.message}</p>
+        <p className="text-sm text-neutral-900">{state.message}</p>
       )}
 
       <button
         type="submit"
         disabled={pending}
-        className="mt-2 rounded-md bg-neutral-900 px-4 py-2.5 font-medium text-white transition hover:bg-neutral-800 disabled:opacity-60"
+        className="mt-2 rounded-md bg-neutral-950 px-4 py-3 font-medium text-white transition hover:bg-neutral-800 disabled:opacity-50"
       >
         {pending ? "Отправка..." : "Зарегистрироваться"}
       </button>
@@ -106,16 +123,16 @@ function Field({
   error?: string;
 }) {
   return (
-    <label className="flex flex-col gap-1 text-sm font-medium text-neutral-800">
+    <label className="flex flex-col gap-1.5 text-sm font-medium text-neutral-900">
       {label}
       <input
         name={name}
         type={type}
         autoComplete={autoComplete}
         required
-        className="rounded-md border border-neutral-300 px-3 py-2 text-base font-normal text-neutral-900 outline-none focus:border-neutral-900"
+        className="rounded-md border border-neutral-300 px-3 py-2.5 text-base font-normal text-neutral-900 outline-none transition focus:border-neutral-950"
       />
-      {error && <span className="text-sm font-normal text-red-600">{error}</span>}
+      {error && <span className="text-sm font-normal text-neutral-600">{error}</span>}
     </label>
   );
 }

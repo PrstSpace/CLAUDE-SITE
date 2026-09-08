@@ -75,20 +75,63 @@ export async function sendTicketEmail(params: TicketEmailParams): Promise<void> 
 
   const subject = `Ваш билет на «${params.eventTitle}»`;
   const dateStr = formatEventDate(params.eventStartsAt);
-  const locationLine = params.eventLocation ? `<p>Место: ${escapeHtml(params.eventLocation)}</p>` : "";
+  const locationRow = params.eventLocation
+    ? `<tr><td style="padding:2px 0; color:#8a8a8a; font-size:13px;">Место</td></tr>
+       <tr><td style="padding:0 0 14px; color:#0a0a0a; font-size:15px;">${escapeHtml(params.eventLocation)}</td></tr>`
+    : "";
 
+  // Table-based layout on purpose: desktop Outlook renders email HTML with
+  // Word's engine, which ignores most modern CSS (flexbox, custom fonts,
+  // box-shadow, etc.) but handles nested tables and inline styles reliably.
   const htmlBody = `
-    <div style="font-family: Arial, sans-serif; font-size: 15px; color: #1a1a1a;">
-      <p>Здравствуйте, ${escapeHtml(params.fullName)}!</p>
-      <p>Ваша регистрация на мероприятие «${escapeHtml(params.eventTitle)}» подтверждена.</p>
-      <p>Дата и время: ${dateStr} (МСК)</p>
-      ${locationLine}
-      <p>Пожалуйста, предъявите QR-код ниже на входе — он будет отсканирован сотрудником стенда.</p>
-      <img src="cid:ticket-qr" alt="QR-билет" width="260" height="260" />
-      <p style="color:#666; font-size: 13px; margin-top: 24px;">
-        Если вы не регистрировались на это мероприятие, просто проигнорируйте это письмо.
-      </p>
-    </div>
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#f2f2f2; padding:32px 16px;">
+  <tr>
+    <td align="center">
+      <table role="presentation" width="480" cellpadding="0" cellspacing="0" style="max-width:480px; width:100%; background:#ffffff; border-radius:12px; overflow:hidden;">
+        <tr>
+          <td align="center" style="background:#0a0a0a; padding:32px 24px;">
+            <div style="font-family: Helvetica, Arial, sans-serif; font-weight:bold; font-size:26px; color:#ffffff; letter-spacing:-0.5px;">
+              PR<span style="display:inline-block; width:1px; height:0.9em; background:#ffffff; margin:0 10px; vertical-align:middle;"></span>ST
+            </div>
+            <div style="font-family: Helvetica, Arial, sans-serif; font-size:11px; color:#ffffff; letter-spacing:4px; margin-top:6px;">
+              SPACE
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td style="padding:32px 32px 8px; font-family: Helvetica, Arial, sans-serif; color:#0a0a0a;">
+            <p style="margin:0 0 16px; font-size:16px;">Здравствуйте, ${escapeHtml(params.fullName)}!</p>
+            <p style="margin:0 0 24px; font-size:15px; color:#3a3a3a;">
+              Ваша регистрация на мероприятие подтверждена.
+            </p>
+            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="font-family: Helvetica, Arial, sans-serif; border-top:1px solid #e5e5e5; padding-top:16px;">
+              <tr><td style="padding:2px 0; color:#8a8a8a; font-size:13px;">Мероприятие</td></tr>
+              <tr><td style="padding:0 0 14px; color:#0a0a0a; font-size:15px; font-weight:bold;">${escapeHtml(params.eventTitle)}</td></tr>
+              <tr><td style="padding:2px 0; color:#8a8a8a; font-size:13px;">Дата и время (МСК)</td></tr>
+              <tr><td style="padding:0 0 14px; color:#0a0a0a; font-size:15px;">${dateStr}</td></tr>
+              ${locationRow}
+            </table>
+          </td>
+        </tr>
+        <tr>
+          <td align="center" style="padding:8px 32px 8px;">
+            <p style="margin:0 0 16px; font-family: Helvetica, Arial, sans-serif; font-size:14px; color:#3a3a3a;">
+              Предъявите этот QR-код на входе — его отсканирует сотрудник стенда.
+            </p>
+            <img src="cid:ticket-qr" alt="QR-билет" width="220" height="220" style="display:block; border:1px solid #e5e5e5; border-radius:8px; padding:12px;" />
+          </td>
+        </tr>
+        <tr>
+          <td style="padding:24px 32px 32px; font-family: Helvetica, Arial, sans-serif;">
+            <p style="margin:0; font-size:12px; color:#a0a0a0;">
+              Если вы не регистрировались на это мероприятие, просто проигнорируйте это письмо.
+            </p>
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
   `;
 
   const message = {
