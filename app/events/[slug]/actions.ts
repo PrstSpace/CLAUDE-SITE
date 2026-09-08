@@ -60,8 +60,10 @@ export async function registerForEvent(
     },
   });
 
+  const qrPngBase64 = await generateTicketQrPngBase64(ticketToken);
+  const qrDataUrl = `data:image/png;base64,${qrPngBase64}`;
+
   try {
-    const qrPngBase64 = await generateTicketQrPngBase64(ticketToken);
     await sendTicketEmail({
       to: data.email,
       fullName: data.fullName,
@@ -82,12 +84,14 @@ export async function registerForEvent(
     return {
       status: "success",
       message:
-        "Регистрация подтверждена, но письмо с билетом отправить не удалось. Обратитесь к организаторам — билет можно выдать вручную по вашему имени.",
+        "Регистрация подтверждена, но письмо с билетом отправить не удалось. Сохраните QR-код ниже — он и есть ваш билет.",
+      qrDataUrl,
     };
   }
 
   return {
     status: "success",
-    message: `Регистрация подтверждена! Билет с QR-кодом отправлен на ${data.email}.`,
+    message: `Регистрация подтверждена! Билет с QR-кодом отправлен на ${data.email}. Он также показан ниже.`,
+    qrDataUrl,
   };
 }

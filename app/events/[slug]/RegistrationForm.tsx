@@ -12,8 +12,18 @@ export default function RegistrationForm({ eventId }: { eventId: string }) {
 
   if (state.status === "success") {
     return (
-      <div className="rounded-lg border border-green-600/30 bg-green-50 p-6 text-green-900">
+      <div className="flex flex-col items-center gap-4 rounded-lg border border-green-600/30 bg-green-50 p-6 text-center text-green-900">
         <p className="font-medium">{state.message}</p>
+        {state.qrDataUrl && (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={state.qrDataUrl}
+            alt="QR-билет"
+            width={220}
+            height={220}
+            className="rounded-md border border-green-600/30 bg-white p-2"
+          />
+        )}
       </div>
     );
   }
