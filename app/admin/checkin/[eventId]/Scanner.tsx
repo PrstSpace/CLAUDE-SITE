@@ -77,7 +77,15 @@ export default function Scanner({ eventId }: { eventId: string }) {
     <div className="flex flex-col items-center gap-6">
       <div
         id={READER_ELEMENT_ID}
-        className="h-80 w-full max-w-sm overflow-hidden rounded-lg border border-neutral-200 [&_video]:h-full [&_video]:w-full [&_video]:object-cover"
+        // Width/height are set inline (not via Tailwind classes) on purpose:
+        // the scanner library reads clientWidth synchronously as soon as the
+        // camera stream is ready and bakes it into the injected <video>'s
+        // inline style permanently. On a client-side navigation to this
+        // page, the stylesheet for a class-based size can still be loading
+        // at that exact moment, so the library would read 0 and the video
+        // stays stuck at 0 width forever. Inline style has no such race.
+        style={{ width: "100%", maxWidth: 384, height: 320 }}
+        className="overflow-hidden rounded-lg border border-neutral-200 [&_video]:!h-full [&_video]:!w-full [&_video]:object-cover"
       />
 
       {cameraError && (
