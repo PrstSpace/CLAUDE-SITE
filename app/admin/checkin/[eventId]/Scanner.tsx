@@ -28,6 +28,15 @@ export default function Scanner({ eventId }: { eventId: string }) {
       if (busyRef.current) return;
       busyRef.current = true;
 
+      // Freeze the camera immediately so the still-visible QR code in
+      // frame can't trigger another decode while the hostess is reading
+      // the result — that would look like a false "already used" repeat.
+      try {
+        scannerRef.current?.pause(true);
+      } catch {
+        // ignore — scanner may not be in a pausable state
+      }
+
       try {
         const res = await fetch("/api/admin/checkin", {
           method: "POST",
@@ -38,14 +47,20 @@ export default function Scanner({ eventId }: { eventId: string }) {
         setResult(data);
       } catch {
         setResult({ ok: false, message: "Ошибка сети, попробуйте ещё раз" });
-      } finally {
-        setTimeout(() => {
-          busyRef.current = false;
-        }, 1500);
       }
     },
     [eventId]
   );
+
+  const scanNext = useCallback(() => {
+    setResult(null);
+    try {
+      scannerRef.current?.resume();
+    } catch {
+      // ignore — scanner may already be running
+    }
+    busyRef.current = false;
+  }, []);
 
   useEffect(() => {
     const scanner = new Html5Qrcode(READER_ELEMENT_ID);
@@ -95,20 +110,32 @@ export default function Scanner({ eventId }: { eventId: string }) {
       )}
 
       {result && (
-        <div
-          className={
-            result.ok
-              ? "w-full max-w-sm rounded-lg border border-green-600/30 bg-green-50 p-4 text-green-900"
-              : "w-full max-w-sm rounded-lg border border-red-600/30 bg-red-50 p-4 text-red-900"
-          }
-        >
-          <p className="font-semibold">{result.message}</p>
-          {result.registrant && (
-            <div className="mt-2 text-sm">
-              <div className="font-medium">{result.registrant.fullName}</div>
-              <div>{result.registrant.company} — {result.registrant.position}</div>
-            </div>
-          )}
+        <div className="flex w-full max-w-sm flex-col gap-4">
+          <div
+            className={
+              result.ok
+                ? "rounded-lg border border-green-600/30 bg-green-50 p-4 text-green-900"
+                : "rounded-lg border border-red-600/30 bg-red-50 p-4 text-red-900"
+            }
+          >
+            <p className="font-semibold">{result.message}</p>
+            {result.registrant && (
+              <div className="mt-2 text-sm">
+                <div className="font-medium">{result.registrant.fullName}</div>
+                <div>
+                  {result.registrant.company} — {result.registrant.position}
+                </div>
+              </div>
+            )}
+          </div>
+
+          <button
+            type="button"
+            onClick={scanNext}
+            className="rounded-md bg-neutral-900 px-4 py-2.5 font-medium text-white transition hover:bg-neutral-800"
+          >
+            Следующий посетитель
+          </button>
         </div>
       )}
     </div>
