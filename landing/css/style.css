@@ -302,34 +302,6 @@ body.js-reveal-ready .reveal.is-visible {
   transform: translateY(0);
 }
 
-/* Program list */
-.program-list {
-  list-style: none;
-  margin: 32px 0 0;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-}
-
-.program-list li {
-  display: flex;
-  gap: 24px;
-  padding: 20px 0;
-  border-top: 1px solid var(--gray-800);
-  font-size: 16px;
-}
-
-.program-list li:last-child {
-  border-bottom: 1px solid var(--gray-800);
-}
-
-.program-time {
-  flex: 0 0 auto;
-  width: 90px;
-  color: var(--gray-500);
-  font-variant-numeric: tabular-nums;
-}
-
 /* Venue / getting there */
 .venue-grid {
   display: grid;
