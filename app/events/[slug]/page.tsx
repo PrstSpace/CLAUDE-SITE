@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { Wordmark } from "@/app/_components/Wordmark";
+import { HeroVideo } from "@/app/_components/HeroVideo";
 import { formatEventDateRange } from "@/lib/datetime";
 import RegistrationForm from "./RegistrationForm";
 
@@ -18,9 +19,10 @@ export default async function EventRegistrationPage({
 
   return (
     <main className="flex min-h-screen flex-col">
-      <div className="flex flex-col items-center gap-8 bg-neutral-950 px-6 pb-14 pt-12 text-white">
-        <Wordmark variant="dark" size="sm" />
-        <div className="flex max-w-lg flex-col items-center gap-2 text-center">
+      <div className="relative flex flex-col items-center gap-8 overflow-hidden bg-neutral-950 px-6 pb-14 pt-12 text-white">
+        <HeroVideo />
+        <Wordmark variant="dark" size="sm" className="relative" />
+        <div className="relative flex max-w-lg flex-col items-center gap-2 text-center">
           <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">{event.title}</h1>
           <p className="text-sm text-neutral-400">
             {formatEventDateRange(event.startsAt, event.endsAt)}

@@ -17,6 +17,7 @@ document.getElementById("cta-register").href = REGISTRATION_URL;
       .then((res) => {
         if (!res.ok) return tryNext(index + 1);
         video.src = src;
+        video.load();
         video.addEventListener(
           "canplay",
           () => {
