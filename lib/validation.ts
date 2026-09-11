@@ -21,13 +21,13 @@ export const registrationSchema = z.object({
   email: z.string().trim().toLowerCase().email("Введите корректный email"),
   company: z.string().trim().min(1, "Укажите компанию").max(200),
   position: z.string().trim().min(1, "Укажите должность").max(200),
+  // "Обязательность" этого согласия проверяется отдельно, явной проверкой в
+  // registerForEvent (а не здесь через .refine) — так это видно в самом
+  // коде регистрации, а не спрятано в общей схеме валидации.
   consentGiven: z
     .union([z.literal("on"), z.literal("true"), z.boolean()])
     .nullable()
-    .transform((v) => v === "on" || v === "true" || v === true)
-    .refine((v) => v === true, {
-      message: "Необходимо согласие на обработку персональных данных",
-    }),
+    .transform((v) => v === "on" || v === "true" || v === true),
   // Согласие на рекламную рассылку — отдельное от согласия на обработку ПД
   // (ст. 18 38-ФЗ "О рекламе"): необязательное, не может быть условием
   // регистрации, поэтому здесь нет .refine на true — не отмечено = false.
