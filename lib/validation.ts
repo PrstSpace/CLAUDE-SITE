@@ -26,6 +26,7 @@ export const registrationSchema = z.object({
   // регистрации, поэтому здесь нет .refine на true — не отмечено = false.
   marketingConsent: z
     .union([z.literal("on"), z.literal("true"), z.boolean()])
+    .nullable()
     .optional()
     .transform((v) => v === "on" || v === "true" || v === true),
 });
@@ -47,6 +48,7 @@ export const eventFormSchema = z.object({
   endsAt: z.string().optional().or(z.literal("")),
   isActive: z
     .union([z.literal("on"), z.literal("true"), z.boolean()])
+    .nullable()
     .optional()
     .transform((v) => v === "on" || v === "true" || v === true),
 });

@@ -20,7 +20,7 @@ export default function RegistrationForm({
   if (state.status === "success") {
     return (
       <div className="flex flex-col items-center gap-6 rounded-2xl border border-neutral-950 bg-white p-8 text-center shadow-2xl">
-        <Wordmark variant="light" size="sm" />
+        <Wordmark variant="light" size="md" />
         <div className="h-px w-full bg-neutral-200" />
         <p className="text-neutral-800">{state.message}</p>
         {state.qrDataUrl && (
