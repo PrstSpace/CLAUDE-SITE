@@ -35,6 +35,10 @@ export async function GET(
     "Статус",
     "Дата регистрации",
     "Дата входа",
+    "Согласие на обработку ПД",
+    "Согласие на рекламную рассылку",
+    "IP согласия",
+    "User-Agent согласия",
   ];
 
   const rows = registrations.map((r) => [
@@ -46,6 +50,10 @@ export async function GET(
     r.status === "CHECKED_IN" ? "Прошёл вход" : "Зарегистрирован",
     r.createdAt.toISOString(),
     r.checkedInAt ? r.checkedInAt.toISOString() : "",
+    r.consentGiven ? "да" : "нет",
+    r.marketingConsent ? "да" : "нет",
+    r.consentIp ?? "",
+    r.consentUserAgent ?? "",
   ]);
 
   const csv = [header, ...rows]

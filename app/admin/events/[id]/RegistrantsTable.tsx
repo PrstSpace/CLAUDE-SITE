@@ -11,6 +11,11 @@ type Registrant = {
   emailSentAt: Date | null;
   emailError: string | null;
   checkedInAt: Date | null;
+  consentGiven: boolean;
+  marketingConsent: boolean;
+  consentIp: string | null;
+  consentUserAgent: string | null;
+  createdAt: Date;
 };
 
 function formatDateTime(date: Date) {
@@ -34,6 +39,7 @@ export default function RegistrantsTable({ registrants }: { registrants: Registr
             <th className="px-3 py-2 font-medium">ФИО</th>
             <th className="px-3 py-2 font-medium">Контакты</th>
             <th className="px-3 py-2 font-medium">Компания</th>
+            <th className="px-3 py-2 font-medium">Согласия</th>
             <th className="px-3 py-2 font-medium">Билет</th>
             <th className="px-3 py-2 font-medium">Вход</th>
             <th className="px-3 py-2" />
@@ -50,6 +56,19 @@ export default function RegistrantsTable({ registrants }: { registrants: Registr
               <td className="px-3 py-2 text-neutral-700">
                 <div>{r.company}</div>
                 <div className="text-neutral-500">{r.position}</div>
+              </td>
+              <td
+                className="px-3 py-2 text-neutral-700"
+                title={[
+                  `Согласие на обработку ПД: ${r.consentGiven ? "да" : "нет"}`,
+                  `Согласие на рекламу: ${r.marketingConsent ? "да" : "нет"}`,
+                  `Отправлено: ${formatDateTime(r.createdAt)}`,
+                  `IP: ${r.consentIp ?? "неизвестен"}`,
+                  `User-Agent: ${r.consentUserAgent ?? "неизвестен"}`,
+                ].join("\n")}
+              >
+                <div>ПД: {r.consentGiven ? "да" : "нет"}</div>
+                <div className="text-neutral-500">Реклама: {r.marketingConsent ? "да" : "нет"}</div>
               </td>
               <td className="px-3 py-2">
                 {r.emailError ? (

@@ -1,11 +1,22 @@
 "use server";
 
+import { headers } from "next/headers";
 import { nanoid } from "nanoid";
 import { prisma } from "@/lib/prisma";
 import { registrationSchema } from "@/lib/validation";
 import { generateTicketQrPngBase64 } from "@/lib/qr";
 import { sendTicketEmail } from "@/lib/mailer";
 import type { RegisterState } from "./form-state";
+
+// IP и User-Agent запроса — доказательство того, что согласия (в т.ч. на
+// рекламную рассылку) дал сам посетитель, а не оператор сам себя подписал.
+async function getConsentMetadata() {
+  const headersList = await headers();
+  const forwardedFor = headersList.get("x-forwarded-for");
+  const ip = forwardedFor?.split(",")[0]?.trim() || headersList.get("x-real-ip") || null;
+  const userAgent = headersList.get("user-agent");
+  return { ip, userAgent };
+}
 
 export async function registerForEvent(
   eventId: string,
@@ -47,6 +58,7 @@ export async function registerForEvent(
 
   const data = parsed.data;
   const ticketToken = nanoid(24);
+  const { ip, userAgent } = await getConsentMetadata();
 
   const registration = await prisma.registration.create({
     data: {
@@ -58,6 +70,8 @@ export async function registerForEvent(
       position: data.position,
       consentGiven: data.consentGiven,
       marketingConsent: data.marketingConsent,
+      consentIp: ip,
+      consentUserAgent: userAgent,
       ticketToken,
     },
   });

@@ -42,6 +42,11 @@ model Registration {
   position      String
   consentGiven  Boolean            @default(false)
   marketingConsent Boolean         @default(false)
+  // IP и User-Agent запроса, отправившего форму — доказательство того, что
+  // согласия (в т.ч. на рекламную рассылку) дал сам посетитель, на случай
+  // спора. Момент согласия — createdAt этой же записи.
+  consentIp        String?
+  consentUserAgent String?
   ticketToken   String             @unique
   status        RegistrationStatus @default(REGISTERED)
   emailSentAt   DateTime?
