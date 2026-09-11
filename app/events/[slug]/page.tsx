@@ -23,25 +23,23 @@ export default async function EventRegistrationPage({
         <HeroVideo />
       </div>
 
-      <div className="relative z-10 mx-auto flex w-full max-w-lg flex-1 flex-col items-center px-6">
-        <div className="flex min-h-[100svh] w-full flex-col items-center justify-center gap-8 py-14">
-          <Wordmark variant="dark" size="sm" />
-          <div className="flex flex-col items-center gap-2 text-center">
-            <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">{event.title}</h1>
-            <p className="text-sm text-neutral-300">
-              {formatEventDateRange(event.startsAt, event.endsAt)}
-            </p>
-            {event.location && <p className="text-sm text-neutral-300">{event.location}</p>}
-          </div>
-
-          {event.description && (
-            <p className="whitespace-pre-line text-center text-neutral-300">
-              {event.description}
-            </p>
-          )}
+      <div className="relative z-10 mx-auto flex w-full max-w-lg flex-1 flex-col items-center justify-center gap-8 px-6 py-14">
+        <Wordmark variant="dark" size="sm" />
+        <div className="flex flex-col items-center gap-2 text-center">
+          <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">{event.title}</h1>
+          <p className="text-sm text-neutral-300">
+            {formatEventDateRange(event.startsAt, event.endsAt)}
+          </p>
+          {event.location && <p className="text-sm text-neutral-300">{event.location}</p>}
         </div>
 
-        <div className="flex w-full flex-col gap-6 pb-14">
+        {event.description && (
+          <p className="whitespace-pre-line text-center text-neutral-300">
+            {event.description}
+          </p>
+        )}
+
+        <div className="flex w-full flex-col gap-6">
           <h2 className="text-lg font-bold tracking-tight text-white">Регистрация</h2>
 
           {event.isActive ? (
