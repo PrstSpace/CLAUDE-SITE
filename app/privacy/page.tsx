@@ -17,11 +17,6 @@ export default function PrivacyPolicyPage() {
       <h1 className="text-2xl font-semibold text-neutral-900">
         Политика обработки персональных данных
       </h1>
-      <p className="mt-3 text-sm font-medium text-amber-700">
-        Черновик документа для юридической проверки. Не публиковать на
-        боевом домене без утверждения юристом компании (реквизиты Оператора,
-        сроки хранения и контактные данные ниже — плейсхолдеры).
-      </p>
       <p className="mt-1 text-xs text-neutral-500">Редакция от [дата утверждения]</p>
 
       <div className="mt-8 flex flex-col gap-8 text-neutral-700">
