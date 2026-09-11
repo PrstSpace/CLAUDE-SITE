@@ -58,7 +58,7 @@ export default function RegistrationForm({
         name="phone"
         type="tel"
         autoComplete="tel"
-        placeholder="+7 999 123-45-67"
+        placeholder="+7 000 000-00-00"
         error={state.fieldErrors?.phone}
       />
       <Field
