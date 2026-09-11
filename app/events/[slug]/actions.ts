@@ -19,6 +19,7 @@ export async function registerForEvent(
     company: formData.get("company"),
     position: formData.get("position"),
     consentGiven: formData.get("consentGiven"),
+    marketingConsent: formData.get("marketingConsent"),
   });
 
   if (!parsed.success) {
@@ -56,6 +57,7 @@ export async function registerForEvent(
       company: data.company,
       position: data.position,
       consentGiven: data.consentGiven,
+      marketingConsent: data.marketingConsent,
       ticketToken,
     },
   });

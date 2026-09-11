@@ -21,6 +21,13 @@ export const registrationSchema = z.object({
     .refine((v) => v === true, {
       message: "Необходимо согласие на обработку персональных данных",
     }),
+  // Согласие на рекламную рассылку — отдельное от согласия на обработку ПД
+  // (ст. 18 38-ФЗ "О рекламе"): необязательное, не может быть условием
+  // регистрации, поэтому здесь нет .refine на true — не отмечено = false.
+  marketingConsent: z
+    .union([z.literal("on"), z.literal("true"), z.boolean()])
+    .optional()
+    .transform((v) => v === "on" || v === "true" || v === true),
 });
 
 export type RegistrationInput = z.infer<typeof registrationSchema>;

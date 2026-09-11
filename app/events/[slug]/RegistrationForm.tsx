@@ -94,6 +94,14 @@ export default function RegistrationForm({
         <p className="text-sm font-medium text-white">{state.fieldErrors.consentGiven}</p>
       )}
 
+      <label className="flex items-start gap-2 text-sm text-neutral-300">
+        <input type="checkbox" name="marketingConsent" className="mt-1 accent-white" />
+        <span>
+          Согласен(на) получать от PRST рекламную и информационную рассылку о
+          мероприятиях и новых продуктах.
+        </span>
+      </label>
+
       {state.status === "error" && state.message && (
         <p className="text-sm font-medium text-white">{state.message}</p>
       )}

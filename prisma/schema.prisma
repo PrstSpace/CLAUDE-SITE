@@ -41,6 +41,7 @@ model Registration {
   company       String
   position      String
   consentGiven  Boolean            @default(false)
+  marketingConsent Boolean         @default(false)
   ticketToken   String             @unique
   status        RegistrationStatus @default(REGISTERED)
   emailSentAt   DateTime?
