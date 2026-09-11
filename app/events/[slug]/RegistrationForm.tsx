@@ -58,6 +58,7 @@ export default function RegistrationForm({
         name="phone"
         type="tel"
         autoComplete="tel"
+        placeholder="+7 999 123-45-67"
         error={state.fieldErrors?.phone}
       />
       <Field
@@ -122,12 +123,14 @@ function Field({
   name,
   type = "text",
   autoComplete,
+  placeholder,
   error,
 }: {
   label: string;
   name: string;
   type?: string;
   autoComplete?: string;
+  placeholder?: string;
   error?: string;
 }) {
   return (
@@ -137,6 +140,7 @@ function Field({
         name={name}
         type={type}
         autoComplete={autoComplete}
+        placeholder={placeholder}
         required
         className="rounded-md border border-white/30 bg-black/30 px-3 py-2.5 text-base font-normal text-white outline-none backdrop-blur-sm transition placeholder:text-neutral-400 focus:border-white"
       />

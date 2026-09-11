@@ -57,6 +57,19 @@ export async function registerForEvent(
   }
 
   const data = parsed.data;
+
+  // Явная дополнительная проверка (помимо схемы валидации): без согласия на
+  // обработку персональных данных билет не выдаётся ни при каких условиях.
+  if (!data.consentGiven) {
+    return {
+      status: "error",
+      message: "Регистрация невозможна без согласия на обработку персональных данных",
+      fieldErrors: {
+        consentGiven: "Необходимо согласие на обработку персональных данных",
+      },
+    };
+  }
+
   const ticketToken = nanoid(24);
   const { ip, userAgent } = await getConsentMetadata();
 

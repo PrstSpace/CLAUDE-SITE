@@ -6,17 +6,24 @@ export const registrationSchema = z.object({
     .trim()
     .min(3, "Введите ФИО полностью")
     .max(200),
+  // Российский формат: +7/8/7 и 10 цифр после кода страны. Приводим к
+  // единому виду +7XXXXXXXXXX независимо от того, как ввёл пользователь
+  // (с пробелами/скобками/дефисами, с 8 или без плюса).
   phone: z
     .string()
     .trim()
-    .min(5, "Введите корректный номер телефона")
-    .max(30)
-    .regex(/^[0-9+()\s-]+$/, "Введите корректный номер телефона"),
+    .regex(/^[0-9+()\s-]+$/, "Введите корректный номер телефона")
+    .transform((v) => v.replace(/[\s()-]/g, ""))
+    .refine((v) => /^(\+7|8|7)\d{10}$/.test(v), {
+      message: "Введите российский номер телефона в формате +7 XXX XXX-XX-XX",
+    })
+    .transform((v) => `+7${v.replace(/^(\+7|8|7)/, "")}`),
   email: z.string().trim().toLowerCase().email("Введите корректный email"),
   company: z.string().trim().min(1, "Укажите компанию").max(200),
   position: z.string().trim().min(1, "Укажите должность").max(200),
   consentGiven: z
     .union([z.literal("on"), z.literal("true"), z.boolean()])
+    .nullable()
     .transform((v) => v === "on" || v === "true" || v === true)
     .refine((v) => v === true, {
       message: "Необходимо согласие на обработку персональных данных",
