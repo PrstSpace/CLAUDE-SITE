@@ -84,7 +84,10 @@ export async function resendTicketEmailAction(registrationId: string) {
       eventTitle: registration.event.title,
       eventLocation: registration.event.location,
       eventStartsAt: registration.event.startsAt,
+      eventEndsAt: registration.event.endsAt,
       qrPngBase64,
+      consentGivenAt: registration.createdAt,
+      marketingConsent: registration.marketingConsent,
     });
     await prisma.registration.update({
       where: { id: registration.id },

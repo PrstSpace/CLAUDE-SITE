@@ -88,6 +88,8 @@ export async function registerForEvent(
       eventStartsAt: event.startsAt,
       eventEndsAt: event.endsAt,
       qrPngBase64,
+      consentGivenAt: registration.createdAt,
+      marketingConsent: data.marketingConsent,
     });
     await prisma.registration.update({
       where: { id: registration.id },

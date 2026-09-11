@@ -57,7 +57,17 @@ export type TicketEmailParams = {
   eventStartsAt: Date;
   eventEndsAt?: Date | null;
   qrPngBase64: string;
+  consentGivenAt: Date;
+  marketingConsent: boolean;
 };
+
+function formatMskDateTime(date: Date) {
+  return new Intl.DateTimeFormat("ru-RU", {
+    dateStyle: "long",
+    timeStyle: "short",
+    timeZone: "Europe/Moscow",
+  }).format(date);
+}
 
 export async function sendTicketEmail(params: TicketEmailParams): Promise<void> {
   const fromMailbox = process.env.GRAPH_SENDER_MAILBOX;
@@ -116,7 +126,16 @@ export async function sendTicketEmail(params: TicketEmailParams): Promise<void> 
           </td>
         </tr>
         <tr>
-          <td style="padding:24px 32px 32px; font-family: Helvetica, Arial, sans-serif;">
+          <td style="padding:24px 32px 8px; font-family: Helvetica, Arial, sans-serif;">
+            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border-top:1px solid #e5e5e5; padding-top:16px;">
+              <tr><td style="padding:0 0 8px; color:#8a8a8a; font-size:12px;">Подтверждённые согласия (${formatMskDateTime(params.consentGivenAt)}, МСК)</td></tr>
+              <tr><td style="padding:2px 0; color:#0a0a0a; font-size:13px;">✓ Согласие на обработку персональных данных в соответствии с Политикой обработки персональных данных ООО «ПРСТ ОПЕРЕЙШН»</td></tr>
+              <tr><td style="padding:6px 0 0; color:#0a0a0a; font-size:13px;">${params.marketingConsent ? "✓" : "–"} Согласие на получение рекламной и информационной рассылки от ООО «ПРСТ ОПЕРЕЙШН»</td></tr>
+            </table>
+          </td>
+        </tr>
+        <tr>
+          <td style="padding:8px 32px 32px; font-family: Helvetica, Arial, sans-serif;">
             <p style="margin:0; font-size:12px; color:#a0a0a0;">
               Если вы не регистрировались на это мероприятие, просто проигнорируйте это письмо.
             </p>
@@ -128,6 +147,11 @@ export async function sendTicketEmail(params: TicketEmailParams): Promise<void> 
 </table>
   `;
 
+  // Копия на внутренний адрес — независимое подтверждение того, что
+  // квитанция о согласиях действительно ушла на почту регистрирующегося
+  // (на случай спора об использовании рекламной рассылки).
+  const consentReceiptBcc = process.env.CONSENT_RECEIPT_EMAIL;
+
   const message = {
     message: {
       subject,
@@ -136,6 +160,9 @@ export async function sendTicketEmail(params: TicketEmailParams): Promise<void> 
         content: htmlBody,
       },
       toRecipients: [{ emailAddress: { address: params.to } }],
+      ...(consentReceiptBcc
+        ? { bccRecipients: [{ emailAddress: { address: consentReceiptBcc } }] }
+        : {}),
       attachments: [
         {
           "@odata.type": "#microsoft.graph.fileAttachment",
