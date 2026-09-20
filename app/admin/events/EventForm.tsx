@@ -39,7 +39,7 @@ export default function EventForm({
         required
       />
       <TextField
-        label="Slug (используется в ссылке /events/slug)"
+        label="Slug (используется в ссылке events.prst.space/slug)"
         name="slug"
         defaultValue={defaultValues?.slug}
         error={state.fieldErrors?.slug}
