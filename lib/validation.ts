@@ -40,6 +40,10 @@ export const registrationSchema = z.object({
 
 export type RegistrationInput = z.infer<typeof registrationSchema>;
 
+// Регистрация мероприятия открыта прямо в корне (events.prst.space/<slug>),
+// поэтому slug не может совпадать с другими реальными маршрутами сайта.
+const RESERVED_SLUGS = new Set(["admin", "api", "privacy", "events"]);
+
 export const eventFormSchema = z.object({
   title: z.string().trim().min(1, "Укажите название мероприятия").max(200),
   slug: z
@@ -48,7 +52,10 @@ export const eventFormSchema = z.object({
     .toLowerCase()
     .min(1, "Укажите slug")
     .max(100)
-    .regex(/^[a-z0-9-]+$/, "Slug может содержать только латиницу, цифры и дефис"),
+    .regex(/^[a-z0-9-]+$/, "Slug может содержать только латиницу, цифры и дефис")
+    .refine((v) => !RESERVED_SLUGS.has(v), {
+      message: "Этот slug зарезервирован системой, выберите другой",
+    }),
   description: z.string().trim().max(2000).optional().or(z.literal("")),
   location: z.string().trim().max(300).optional().or(z.literal("")),
   startsAt: z.string().min(1, "Укажите дату начала"),

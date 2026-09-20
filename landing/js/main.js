@@ -1,6 +1,6 @@
 // Ссылка на форму регистрации конкретного мероприятия.
 // Замените на реальный адрес, когда узнаете точный slug на проде.
-const REGISTRATION_URL = "https://events.prst.space/rdda-spb-2026";
+const REGISTRATION_URL = "https://events.prst.space/rdda2026";
 
 document.getElementById("cta-register").href = REGISTRATION_URL;
 

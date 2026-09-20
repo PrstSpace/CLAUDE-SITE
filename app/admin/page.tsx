@@ -46,7 +46,7 @@ export default async function AdminEventsPage() {
               <tr key={event.id} className="border-t border-neutral-100">
                 <td className="px-4 py-3 font-medium text-neutral-900">
                   {event.title}
-                  <div className="text-xs font-normal text-neutral-500">/events/{event.slug}</div>
+                  <div className="text-xs font-normal text-neutral-500">/{event.slug}</div>
                 </td>
                 <td className="px-4 py-3 text-neutral-700">{formatEventDate(event.startsAt)}</td>
                 <td className="px-4 py-3">
